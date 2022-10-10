@@ -2,12 +2,29 @@ import { TEXT_ELEMENT } from './constant';
 import type { Element, Fiber } from './types';
 
 let nextUnitOfWork:Fiber | null = null;
+let wipRoot:Fiber | null = null
+
+function commitRoot(){
+  commitWork(wipRoot?.child!);
+  wipRoot = null;
+}
+
+function commitWork(fiber:Fiber | undefined) {
+  if(fiber === undefined) return
+  const domParent = fiber.parent?.dom;
+  domParent?.appendChild(fiber.dom!);
+  commitWork(fiber.child);
+  commitWork(fiber.sibling)
+}
 
 function workLoop(deadline: IdleDeadline) {
   let shouldYield = false;
   while (nextUnitOfWork !== null && !shouldYield) {
     nextUnitOfWork = performUnitOfWork(nextUnitOfWork);
     shouldYield = deadline.timeRemaining() < 1;
+  }
+  if(nextUnitOfWork === null && wipRoot !== null) {
+    commitRoot();
   }
   requestIdleCallback(workLoop);
 }
@@ -16,10 +33,7 @@ function performUnitOfWork(fiber: Fiber): Fiber | null {
   if (!fiber.dom) {
     fiber.dom = createDOM(fiber);
   }
-  if (fiber.parent) {
-    fiber.parent.dom!.appendChild(fiber.dom!);
-  }
-  const elements = fiber.props.children;
+  const elements = fiber.props!.children;
   let index = 0;
   let prevSibling: Fiber | null = null;
   while (index < elements.length) {
@@ -63,10 +77,11 @@ function createDOM(fiber) {
 }
 
 export default function render(element: Element, container: HTMLElement) {
-  nextUnitOfWork = {
+  wipRoot = {
     dom: container,
     props: {
       children: [element],
     },
   };
+  nextUnitOfWork = wipRoot;
 }

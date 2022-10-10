@@ -5,9 +5,10 @@ export type Element = {
   type: ElementType;
   props: object & { children: Children };
 };
-export type Fiber = Element & {
+export type Fiber =Partial<Element> & {
   dom?: HTMLElement;
   parent?: Fiber;
   sibling?: Fiber;
   child?: Fiber;
+  alternate? :Fiber;
 };
