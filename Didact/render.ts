@@ -1,6 +1,19 @@
 import { TEXT_ELEMENT } from './constant';
 import type { Element } from './types';
 
+let nextUnitOfWork = null;
+
+function workLoop(deadline: IdleDeadline) {
+  let shouldYield = false;
+  while (nextUnitOfWork !== null && !shouldYield) {
+    nextUnitOfWork = performUnitOfWork(nextUnitOfWork);
+    shouldYield = deadline.timeRemaining() < 1;
+  }
+  requestIdleCallback(workLoop);
+}
+
+function performUnitOfWork(nextUnitOfWork) {}
+
 export default function render(element: Element, container: HTMLElement) {
   // 区分是普通的节点还是文本节点
   const dom =
