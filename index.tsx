@@ -7,3 +7,5 @@ const element = (
     <b />
   </div>
 )
+const container = document.querySelector('#root');
+ReactDOM.render(element,container);
