@@ -3,9 +3,9 @@ import * as Didact from './Didact';
 /* @jsx Didact.createElement */
 const element = (
   <div id="foo">
-    <a>bar</a>
-    <b />
+    <span>bar</span>
+    <span>bar2</span>
   </div>
-)
-const container = document.querySelector('#root');
-Didact.render(element,container);
+);
+const container = document.querySelector('#root') as HTMLElement;
+Didact.render(element, container);
