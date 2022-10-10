@@ -1,8 +1,5 @@
-type ElementType = string;
-type Props = object | null;
-type Children = Array<any>;
-
-const TEXT_ELEMENT = 'TEXT_ELEMENT';
+import { TEXT_ELEMENT } from './constant';
+import type { ElementType, Props, Children } from './types';
 
 export default function createElement(
   type: ElementType,

@@ -8,4 +8,4 @@ const element = (
   </div>
 )
 const container = document.querySelector('#root');
-ReactDOM.render(element,container);
+Didact.render(element,container);
